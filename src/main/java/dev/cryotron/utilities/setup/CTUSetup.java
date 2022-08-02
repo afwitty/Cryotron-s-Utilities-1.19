@@ -38,30 +38,22 @@ public class CTUSetup {
         modbus.addListener(EventPriority.NORMAL, false, FMLClientSetupEvent.class, CTUSetup::clientSetup);        
 	}
 	
-	public static void register() {
-    	//final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-	
-	}
-
-	public static void postInit() {
-        //IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-		
-	}
-	
-    public static void commonSetup(FMLCommonSetupEvent event) {
+    public static void commonSetup(final FMLCommonSetupEvent event) {
     	
-    	ClientEvents.init();
-    	
-    	// Appleskin
-		SyncHandler.init();					
+        	// Appleskin
+    		SyncHandler.init();				    		
+	
     }
     
     public static void clientSetup(FMLClientSetupEvent event) {	
+    	ClientEvents.init();
+    	
     	HealthStatusRenderer.init();
     	ArmorStatusRenderer.init();
     	HungerStatusRenderer.init();
     	BreathStatusRenderer.init();
     	MntHealthStatusRenderer.init();
+
     	
     }
     

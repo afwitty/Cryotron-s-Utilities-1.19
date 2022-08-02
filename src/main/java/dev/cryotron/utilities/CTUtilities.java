@@ -21,16 +21,10 @@ public class CTUtilities {
     	LOGGER.info("Cryotron's Utilities Online!");
     	
     	// Config
-		CTUtilitiesConfig.init();	
-    	
-		// Register
-    	CTUSetup.register();
+		CTUtilitiesConfig.init();	 	
     	
     	// PreInit
-    	CTUSetup.preInit();	// Current Culprit of common calling client side.
-    	
-    	// PostInit
-    	CTUSetup.postInit();
+    	CTUSetup.preInit();	    	
 	}
 	
 	public static ResourceLocation id(String name) {

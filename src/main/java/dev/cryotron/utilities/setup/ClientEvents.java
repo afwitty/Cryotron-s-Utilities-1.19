@@ -11,9 +11,9 @@ import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = CTUtilities.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientEvents {
 	
 	public static void init() {
@@ -25,22 +25,22 @@ public class ClientEvents {
 	private static Minecraft minecraft = Minecraft.getInstance();
 	
     // Supplemental Methods - Will move them later.
-    
-    private static void playerTick(PlayerTickEvent event) {
+	
+    public static void playerTick(PlayerTickEvent event) {
         if (!event.player.level.isClientSide) {
           return;
         }
         BarStates.tick();
       }
     
-    private static void entityRender(RenderLivingEvent.Post<? extends LivingEntity, ? extends EntityModel<?>> event) {
+    public static void entityRender(RenderLivingEvent.Post<? extends LivingEntity, ? extends EntityModel<?>> event) {
 
     		DamageDoneParticleRenderer.prepareRenderInWorld(event.getEntity());
     	  }
 
     
     @SuppressWarnings({ "removal", "deprecation" })
-	private static void renderParticles(RenderLevelLastEvent event) {  	
+	public static void renderParticles(RenderLevelLastEvent event) {  	
         Camera camera = minecraft.gameRenderer.getMainCamera();
         DamageDoneParticleRenderer.renderParticles(event.getPoseStack(), camera);
         DamageDoneParticleRenderer.renderInWorld(event.getPartialTick(), event.getPoseStack(), camera);
