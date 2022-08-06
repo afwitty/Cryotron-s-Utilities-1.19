@@ -34,15 +34,15 @@ public class DamageDoneParticleRenderer {
 	
 	  public static void renderParticles(PoseStack matrix, Camera camera) {
 		    for (BarParticle p : BarStates.PARTICLES) {
+			  //CTUtilities.LOGGER.info("BarParticle: " + p);	    
 		      renderParticle(matrix, p, camera);
 		    }
 		  }
 
-		  private static void renderParticle(PoseStack matrix, BarParticle particle, Camera camera) {
-		    double distanceSquared = camera.getPosition().distanceToSqr(particle.x, particle.y, particle.z);
+	  private static void renderParticle(PoseStack matrix, BarParticle particle, Camera camera) {
+		    //double distanceSquared = camera.getPosition().distanceToSqr(particle.x, particle.y, particle.z);
 
-
-
+		  
 		    Minecraft client = Minecraft.getInstance();
 		    float tickDelta = client.getDeltaFrameTime();
 
@@ -64,13 +64,12 @@ public class DamageDoneParticleRenderer {
 		    double deltaY = y - camY;
 		    double deltaZ = z - camZ;
 		    
-		    float scaleToGui = 0.025f;
+		    float scaleToGui = 0.033f; // From 0.025f
 		    // PROTOTYPE: Number should display bigger when the damaged entity is at least 10 blocks away from any direction.
 		    if ( (deltaX > 10 || deltaX < -10) || (deltaY > 10 || deltaY < -10) || (deltaZ > 10 || deltaZ < -10) ) {
 		    	scaleToGui = 0.066f; // From 0.075f
 		    }
 
-		    
 		    matrix.scale(-scaleToGui, -scaleToGui, scaleToGui);
 
 		    RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -79,6 +78,7 @@ public class DamageDoneParticleRenderer {
 		    RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 		    boolean isCrit = particle.isCrit;
+		    
 		    if (isCrit == true) {
 		    	matrix.scale(1.5f, 1.5f, 1.5f);
 		    	drawDamageNumber(matrix, particle.damage, 0, 0, 20, isCrit);    	
@@ -92,27 +92,28 @@ public class DamageDoneParticleRenderer {
 		    matrix.popPose();
 		  }
 		  
-		  public static void drawDamageNumber(PoseStack matrix, int dmg, double x, double y, float width, boolean isCrit) {
+		  public static void drawDamageNumber(PoseStack matrix, float dmg, double x, double y, float width, boolean isCrit) {			    
 			    int i = Math.abs(Math.round(dmg));
-			    if (i == 0) {
-			      return;
-			    }
 			    String s = Integer.toString(i);
 			    Minecraft minecraft = Minecraft.getInstance();
 			    
+			    int zeroColor = 0x808080;
 			    int damageColor = 0xffffff;
 			    int healColor = 0x00ff00;
 			    int critColor = 0xffff00;
 			    
 			    int sw = minecraft.font.width(s);
-			    int color = dmg < 0 ? healColor : damageColor;
+			    
+			    int color = dmg < 0 ? healColor : damageColor;    
+			    color = dmg == 0.00f ? zeroColor : damageColor;
+			    
 			    if (isCrit == true) {
 			    	color = critColor;
 				    minecraft.font.draw(matrix, s, (int) (x + (width / 2) - sw), (int) y + 5, color);			    	
-			    } else {
+			    } 
+			    else {
 				    minecraft.font.draw(matrix, s, (int) (x + (width / 2) - sw), (int) y + 5, color);			    	
 			    }
-			    
 
 			  }
 
@@ -135,8 +136,7 @@ public class DamageDoneParticleRenderer {
 		    RenderSystem.setShader(GameRenderer::getPositionColorShader);
 		    RenderSystem.enableDepthTest();
 		    RenderSystem.enableBlend();
-		    RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE,
-		        GL11.GL_ZERO);
+		    RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 		    for (LivingEntity entity : renderedEntities) {
 		      float scaleToGui = 0.025f;
@@ -165,8 +165,7 @@ public class DamageDoneParticleRenderer {
 
 		    RenderSystem.disableBlend();
 
-		    renderedEntities.clear();
-			
+		    renderedEntities.clear();	    
 		}
 
 

@@ -2,8 +2,10 @@ package dev.cryotron.utilities.networking;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -24,6 +26,8 @@ import java.util.UUID;
 
 import dev.cryotron.utilities.CTUtilities;
 import dev.cryotron.utilities.client.particles.BarState;
+import dev.cryotron.utilities.client.particles.BarStates;
+import dev.cryotron.utilities.client.particles.BarParticle;
 import dev.cryotron.utilities.networking.appleskin.MessageExhaustionSync;
 import dev.cryotron.utilities.networking.appleskin.MessageSaturationSync;
 import dev.cryotron.utilities.networking.torohealth.MessageDamageDoneSync;
@@ -53,7 +57,13 @@ public class SyncHandler
 	 */
 	private static final Map<UUID, Float> lastSaturationLevels = new HashMap<>();
 	private static final Map<UUID, Float> lastExhaustionLevels = new HashMap<>();
-
+	
+	private static boolean isPlayer = false;
+	private static boolean isDamaged = false;
+	private static boolean isCrit = false;
+	private static float dammie = 0;
+	private static int entityID;
+	
 	@SubscribeEvent
 	public void onLivingUpdateEvent(LivingUpdateEvent event)
 	{
@@ -90,75 +100,43 @@ public class SyncHandler
 		lastExhaustionLevels.remove(event.getPlayer().getUUID());
 	}
 	
-	
-//	@SubscribeEvent
-//	public void damageTakenEvent( LivingHurtEvent event ) {	
-//		Boolean isPlayer = false;
-//		if (!(event.getSource().getEntity() instanceof ServerPlayer)) {
-//			List<? extends Player> player = event.getEntity().getLevel().players();
-//			for (Player p : player ) {	// Not entirely sure if I like this solution... That's gonna be a lot of packets.
-//				if (!(p instanceof ServerPlayer)) {
-//					return;
-//				}
-//				ServerPlayer sp = (ServerPlayer) p;
-//				Object msg = new MessageIsPlayerSync(isPlayer);
-//				CHANNEL.sendTo(msg, sp.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-//			}
-//			return;
-//		}
-//		else {			
-//			ServerPlayer player = (ServerPlayer) event.getSource().getEntity();
-//			isPlayer = true;
-//
-//			Object msg = new MessageIsPlayerSync(isPlayer);
-//			CHANNEL.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);		
-//		}
-//		
-//	}
-	
 	@SubscribeEvent
 	public void playerAttackEvent( AttackEntityEvent event ) {
-
-		if (!event.getPlayer().getLevel().isClientSide) {
-			return;
-		}
-		BarState.isPlayer = true;	 
+		isPlayer = true;	 
 	}
 	
 	@SubscribeEvent
 	public void playerCritEvent( CriticalHitEvent event ) {	
-		if (!event.getPlayer().getLevel().isClientSide) {
-			return;
-		}
-		
 		if ( event.isVanillaCritical() ) {
-			BarState.isCrit = true;
-		}
-		else {
-			BarState.isCrit = false;
+			isCrit = true;
 		}
 	}
 	
-
 	@SubscribeEvent
-	public void playerDamageEvent (LivingDamageEvent event) {
-
-//		CTUtilities.LOGGER.info("Direct Entity: "+event.getSource().getDirectEntity());
-		
-		if (!(event.getSource().getEntity() instanceof ServerPlayer)) {
-			return;
-		}
+	public void playerDamageEvent (LivingHurtEvent event) {
 		
 		if (event.getSource().getEntity() instanceof ServerPlayer) {
 			ServerPlayer sp = (ServerPlayer) event.getSource().getEntity();
-			CTUtilities.LOGGER.info("Entity: "+event.getSource().getEntity());
-			if ( event.getSource().getDirectEntity() instanceof Projectile ) {
-				BarState.isPlayer = true;	 
-				BarState.isCrit = false;
-			}
+
+			isDamaged = true;
+			isPlayer = true;	 
+			dammie = event.getAmount();
+
+			Vec3 entityLocation = event.getEntityLiving().position().add(0, event.getEntityLiving().getBbHeight()/2, 0);
+			double x = entityLocation.x();
+			double y = entityLocation.y();
+			double z = entityLocation.z();
+			double offset = event.getEntityLiving().getBbWidth();
 			
-			Object msg = new MessageDamageDoneSync(event.getAmount());
+			Object msg = new MessageDamageDoneSync(x,y,z,offset, isDamaged, isPlayer, dammie, isCrit);
 			CHANNEL.sendTo(msg, sp.connection.connection, NetworkDirection.PLAY_TO_CLIENT);		
+			
+			// Reset values after sending packet
+			isPlayer = false;
+			isDamaged = false;
+			isCrit = false;
+			dammie = 0;
+
 		}
 	}
 }

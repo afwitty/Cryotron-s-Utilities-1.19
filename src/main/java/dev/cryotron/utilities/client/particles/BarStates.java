@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import dev.cryotron.utilities.CTUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,17 +26,23 @@ public class BarStates {
 	  }
 
 	  public static void tick() {
+
 	    for (BarState state : STATES.values()) {
 	      state.tick();
-	    }
 
+	    }	
+	    
 	    if (tickCount % 200 == 0) {
 	      cleanCache();
 	    }
 
 	    PARTICLES.forEach(p -> p.tick());
-	    PARTICLES.removeIf(p -> p.age > 50);
+	    PARTICLES.removeIf(p -> p.age > 40); // From 50, then 30
 
+	    
+	     BarState.isDamaged = false;
+	     BarState.isPlayer = false;
+	    
 	    tickCount++;
 	  }
 

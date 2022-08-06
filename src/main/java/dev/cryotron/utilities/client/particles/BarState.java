@@ -4,26 +4,35 @@ import dev.cryotron.utilities.CTUtilities;
 import dev.cryotron.utilities.networking.SyncHandler;
 import dev.cryotron.utilities.networking.torohealth.MessageDamageDoneSync;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
 
 public class BarState {
 
-  public final LivingEntity entity;
+public final LivingEntity entity;
 
   public float health;
   public float previousHealth;
   public float previousHealthDisplay;
   public float previousHealthDelay;
-  public int lastDmg;
-  public int lastDmgCumulative;
+  public float lastDmg;
+  public float lastDmgCumulative;
   public float lastHealth;
   public float lastDmgDelay;
   private float animationSpeed = 0;
   
-  public static int dammie;
+  public static float dammie;
+  public static boolean isDamaged;
   public static boolean isPlayer;
   public static boolean isCrit;
+  public static int entityID;
+  
+  public static Vec3 entityLocation;
+  public static double offset;
 
   private static final float HEALTH_INDICATOR_DELAY = 10;
 
@@ -34,22 +43,17 @@ public class BarState {
   public void tick() {
     health = Math.min(entity.getHealth(), entity.getMaxHealth());
     incrementTimers();
-
-    if (lastHealth < 0.1) {
-      reset();
-
-    } else 
+    
+    if ((lastHealth != health) && dammie > 0.00f && isPlayer && isDamaged) {
+    	handleHealthChange();  
+    } else    	
     	
-    if (lastHealth != health) {
-      handleHealthChange();
-
-    } else if (lastDmgDelay == 0.0F) {
-      reset();
+    if ((dammie == 0.00f) && isDamaged && isPlayer) {		
+    	handleHealthChange();
     }
-
-    updateAnimations();
   }
 
+  // Possibly deprecated.
   private void reset() {
     lastHealth = health;
     lastDmg = 0;
@@ -65,34 +69,39 @@ public class BarState {
     }
   }
 
+  // VERY possibly deprecated. -CT
   private void handleHealthChange() {
-    lastDmg = Mth.ceil(lastHealth) - Mth.ceil(health);
+
+	lastDmg = Mth.ceil(lastHealth) - Mth.ceil(health);
     lastDmgCumulative += lastDmg;
-
-
+    
     lastDmgDelay = HEALTH_INDICATOR_DELAY * 2;
     lastHealth = health;
-
     
-    if (isPlayer == true) {
-    	BarStates.PARTICLES.add(new BarParticle(entity, dammie, isCrit));
-    	isPlayer = false;
-    }
+    
+    BarStates.PARTICLES.add(new BarParticle(entityLocation, offset, dammie, isCrit));  	   
+
+    isDamaged = false;
+
+
   }
 
-  private void updateAnimations() {
-    if (previousHealthDelay > 0) {
-      float diff = previousHealthDisplay - health;
-      if (diff > 0) {
-        animationSpeed = diff / 10f;
-      }
-    } else if (previousHealthDelay < 1 && previousHealthDisplay > health) {
-      previousHealthDisplay -= animationSpeed;
-    } else {
-      previousHealthDisplay = health;
-      previousHealth = health;
-      previousHealthDelay = HEALTH_INDICATOR_DELAY;
-    }
-  }
+//  	// Possibly deprecated.
+//  private void updateAnimations() {
+//    if (previousHealthDelay > 0) {
+//      float diff = previousHealthDisplay - health;
+//
+//      if (diff > 0) {
+//        animationSpeed = diff / 10f;
+//      }
+//      
+//    } else if (previousHealthDelay < 1 && previousHealthDisplay > health) {
+//      previousHealthDisplay -= animationSpeed;
+//    } else {
+//      previousHealthDisplay = health;
+//      previousHealth = health;
+//      previousHealthDelay = HEALTH_INDICATOR_DELAY;
+//    }
+//  }
 
 }
