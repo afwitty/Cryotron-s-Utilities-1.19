@@ -1,15 +1,8 @@
 package dev.cryotron.utilities.client.particles;
 
-import dev.cryotron.utilities.CTUtilities;
-import dev.cryotron.utilities.networking.SyncHandler;
-import dev.cryotron.utilities.networking.torohealth.MessageDamageDoneSync;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.Event.Result;
 
 public class BarState {
 
@@ -23,7 +16,8 @@ public final LivingEntity entity;
   public float lastDmgCumulative;
   public float lastHealth;
   public float lastDmgDelay;
-  private float animationSpeed = 0;
+  @SuppressWarnings("unused")
+private float animationSpeed = 0;
   
   public static float dammie;
   public static boolean isDamaged;
@@ -54,7 +48,8 @@ public final LivingEntity entity;
   }
 
   // Possibly deprecated.
-  private void reset() {
+  @SuppressWarnings("unused")
+private void reset() {
     lastHealth = health;
     lastDmg = 0;
     lastDmgCumulative = 0;
@@ -77,7 +72,6 @@ public final LivingEntity entity;
     
     lastDmgDelay = HEALTH_INDICATOR_DELAY * 2;
     lastHealth = health;
-    
     
     BarStates.PARTICLES.add(new BarParticle(entityLocation, offset, dammie, isCrit));  	   
 

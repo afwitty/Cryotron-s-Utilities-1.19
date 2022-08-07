@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dev.cryotron.utilities.CTUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -50,7 +49,8 @@ public class BarStates {
 	    STATES.entrySet().removeIf(BarStates::stateExpired);
 	  }
 
-	  private static boolean stateExpired(Map.Entry<Integer, BarState> entry) {
+	  @SuppressWarnings("deprecation")
+	private static boolean stateExpired(Map.Entry<Integer, BarState> entry) {
 	    if (entry.getValue() == null) {
 	      return true;
 	    }

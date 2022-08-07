@@ -1,17 +1,10 @@
 package dev.cryotron.utilities.client.gui.hud;
 
-import java.util.Random;
-import java.util.Vector;
-
-import org.lwjgl.opengl.GL11;
-
 import dev.cryotron.utilities.CTUtilities;
 import dev.cryotron.utilities.common.CTUtilitiesConfig;
 import dev.cryotron.utilities.util.aoa.NumberUtil;
-import dev.cryotron.utilities.util.aoa.RandomUtil;
 import dev.cryotron.utilities.util.aoa.RenderUtil;
 import dev.cryotron.utilities.util.aoa.ColourUtil;
-import dev.cryotron.utilities.util.aoa.LocaleUtil;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,19 +13,12 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodData;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 
