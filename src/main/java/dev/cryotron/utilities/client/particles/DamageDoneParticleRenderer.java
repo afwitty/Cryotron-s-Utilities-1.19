@@ -1,11 +1,9 @@
 package dev.cryotron.utilities.client.particles;
 
-import com.google.gson.annotations.JsonAdapter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 
-import dev.cryotron.utilities.CTUtilities;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -21,9 +19,11 @@ import org.lwjgl.opengl.GL11;
 public class DamageDoneParticleRenderer {
 	
 	  private static final List<LivingEntity> renderedEntities = new ArrayList<>();
-	  private static final float FULL_SIZE = 40;
+	  @SuppressWarnings("unused")
+	private static final float FULL_SIZE = 40;
 	  
-	  public static void prepareRenderInWorld(LivingEntity entity) {
+	  @SuppressWarnings("resource")
+	public static void prepareRenderInWorld(LivingEntity entity) {
 		    if (!entity.getLevel().isClientSide)
 		    	return;
 		  
