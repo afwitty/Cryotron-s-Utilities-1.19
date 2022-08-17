@@ -2,9 +2,7 @@ package dev.cryotron.utilities.client.particles;
 
 import java.util.Random;
 
-import dev.cryotron.utilities.CTUtilities;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 public class BarParticle {

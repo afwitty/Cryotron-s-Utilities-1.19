@@ -1,7 +1,5 @@
 package dev.cryotron.utilities.util.aoa;
 
-import java.awt.TextComponent;
-
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.Window;
@@ -21,7 +19,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.EffectRenderer;
 
 // Changed a little bit from AoA Github to make it work for now. -CT
 public final class RenderUtil {

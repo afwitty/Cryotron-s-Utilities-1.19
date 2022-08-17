@@ -60,7 +60,7 @@ public class RandomUtil {
 		return RANDOM.randomValueBetween(min, max);
 	}
 
-	public static <T> T getRandomSelection(@Nonnull T... options) {
+	public static <T> T getRandomSelection(@SuppressWarnings("unchecked") @Nonnull T... options) {
 		return RANDOM.getRandomSelection(options);
 	}
 
@@ -164,7 +164,7 @@ public class RandomUtil {
 			return min + RANDOM.nextDouble() * (max - min);
 		}
 
-		public <T> T getRandomSelection(@Nonnull T... options) {
+		public <T> T getRandomSelection(@SuppressWarnings("unchecked") @Nonnull T... options) {
 			return options[RANDOM.nextInt(options.length)];
 		}
 

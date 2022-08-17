@@ -12,7 +12,6 @@ import dev.cryotron.utilities.util.aoa.LocaleUtil;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +27,7 @@ public class BreathStatusRenderer {
 	private static final ResourceLocation DROWN_BAR = CTUtilities.id("textures/gui/overlay/misc/drowning.png");
 	private static float deltaHealth = 0;
 	private static int lastHealthTime = 0;
+	@SuppressWarnings("unused")
 	private static float lastTickHealth = 0;
 
 	public static void init() {

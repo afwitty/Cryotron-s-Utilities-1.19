@@ -1,6 +1,5 @@
 package dev.cryotron.utilities.networking.torohealth;
 
-import dev.cryotron.utilities.CTUtilities;
 import dev.cryotron.utilities.client.particles.BarState;
 import net.minecraft.world.phys.Vec3;
 

@@ -2,13 +2,8 @@ package dev.cryotron.utilities.networking;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -20,14 +15,10 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import dev.cryotron.utilities.CTUtilities;
-import dev.cryotron.utilities.client.particles.BarState;
-import dev.cryotron.utilities.client.particles.BarStates;
-import dev.cryotron.utilities.client.particles.BarParticle;
 import dev.cryotron.utilities.networking.appleskin.MessageExhaustionSync;
 import dev.cryotron.utilities.networking.appleskin.MessageSaturationSync;
 import dev.cryotron.utilities.networking.torohealth.MessageDamageDoneSync;
@@ -62,7 +53,6 @@ public class SyncHandler
 	private static boolean isDamaged = false;
 	private static boolean isCrit = false;
 	private static float dammie = 0;
-	private static int entityID;
 	
 	@SubscribeEvent
 	public void onLivingUpdateEvent(LivingUpdateEvent event)
