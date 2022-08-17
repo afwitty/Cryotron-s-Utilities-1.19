@@ -65,7 +65,7 @@ public class HealthStatusRenderer {
 		boolean poisoned = mc.player.hasEffect(MobEffects.POISON);
 		boolean withered = mc.player.hasEffect(MobEffects.WITHER);
 		boolean frozen = mc.player.isFullyFrozen();
-		float absorption = mc.player.getAbsorptionAmount();
+		int absorption = (int) mc.player.getAbsorptionAmount();
 
 		if (renderType == HealthRenderType.NUMERIC) {
 			renderNumeric(matrix, mc, gui, left, top, currentHealth, maxHealth, poisoned, withered, frozen, absorption);
