@@ -4,7 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
-version = '1.0.3fALPHA'
+version = '1.0.5'
 group = 'dev.cryotron.utilities' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'CryoUtilities_1.19'
 
