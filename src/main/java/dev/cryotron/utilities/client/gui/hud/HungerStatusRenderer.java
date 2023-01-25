@@ -17,9 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 
@@ -33,10 +32,10 @@ public class HungerStatusRenderer {
 	private static float lastTickArmor = 0;
 	
 	public static void init() {
-		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, RenderGuiOverlayEvent.Pre.class, HungerStatusRenderer::onHungerRender);		
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, RenderGameOverlayEvent.PreLayer.class, HungerStatusRenderer::onHungerRender);		
 	}
 	
-	private static void onHungerRender( RenderGuiOverlayEvent.Pre ev ) {
+	private static void onHungerRender( RenderGameOverlayEvent.PreLayer ev ) {
 		
 		Minecraft mc = Minecraft.getInstance();
 		
@@ -50,7 +49,7 @@ public class HungerStatusRenderer {
 		boolean saturation = mc.player.hasEffect(MobEffects.SATURATION);
 		float maxHealth = 20;	
 	
-		if (ev.isCanceled() || !ev.getOverlay().id().equals(VanillaGuiOverlay.FOOD_LEVEL.id())) {
+		if (ev.isCanceled() || ev.getOverlay() != ForgeIngameGui.FOOD_LEVEL_ELEMENT) {
 			return;
 		}
 		
@@ -60,12 +59,12 @@ public class HungerStatusRenderer {
 			return;
 		}		
 
-		if (!(mc.gui instanceof ForgeGui gui) || mc.options.hideGui || !gui.shouldDrawSurvivalElements())
+		if (!(mc.gui instanceof ForgeIngameGui gui) || mc.options.hideGui || !gui.shouldDrawSurvivalElements())
 			return;
 
 		int left = (mc.getWindow().getGuiScaledWidth() / 2) + 10;
-		int top = mc.getWindow().getGuiScaledHeight() - gui.rightHeight; // 25;
-		gui.rightHeight += 11;
+		int top = mc.getWindow().getGuiScaledHeight() - gui.right_height; // 25;
+		gui.right_height += 11;
 		
 		gui.setupOverlayRenderState(true, false);
 		ev.setCanceled(true);
@@ -85,11 +84,11 @@ public class HungerStatusRenderer {
 		
 		RenderSystem.disableBlend();
 		mc.getProfiler().pop();
-		//MinecraftForge.EVENT_BUS.post(new RenderGuiOverlayEvent.Post(matrix, ev, RenderGuiOverlayEvent.ElementType.LAYER));
+		MinecraftForge.EVENT_BUS.post(new RenderGameOverlayEvent.Post(matrix, ev, RenderGameOverlayEvent.ElementType.LAYER));
 		
 	}
 	
-	private static void renderBar(PoseStack matrix, Minecraft mc, ForgeGui gui, int left, int top, float currentHunger, float maxHealth, float saturationLevel, float exhaustionLevel, boolean hunger, boolean saturation) {
+	private static void renderBar(PoseStack matrix, Minecraft mc, ForgeIngameGui gui, int left, int top, float currentHunger, float maxHealth, float saturationLevel, float exhaustionLevel, boolean hunger, boolean saturation) {
 		int uvY = 0;
 		if (hunger) {
 			uvY = 36;
@@ -161,7 +160,7 @@ public class HungerStatusRenderer {
 		matrix.popPose();
 	}
 
-	private static void renderNumeric(PoseStack matrix, Minecraft mc, ForgeGui gui, int left, int top, float currentHunger, float maxHealth, float saturationLevel, boolean hunger, boolean saturation) {
+	private static void renderNumeric(PoseStack matrix, Minecraft mc, ForgeIngameGui gui, int left, int top, float currentHunger, float maxHealth, float saturationLevel, boolean hunger, boolean saturation) {
 		int healthColour;
 
 		healthColour = ColourUtil.RGB(252, 252, 252);
@@ -198,7 +197,7 @@ public class HungerStatusRenderer {
 			}
 		}
 		else {
-			gui.leftHeight += 2;
+			gui.left_height += 2;
 
 			if (saturationLevel > 0) 
 				left -=8;
@@ -250,7 +249,7 @@ public class HungerStatusRenderer {
 	}
 
 	// Possibly deprecated. -CT
-	private static boolean handleHungerState(LocalPlayer player, ForgeGui gui, float currentHunger) {
+	private static boolean handleHungerState(LocalPlayer player, ForgeIngameGui gui, float currentHunger) {
 		boolean shouldFlash = gui.healthBlinkTime > (long)gui.tickCount && (gui.healthBlinkTime - (long)gui.tickCount) / 3L % 2L == 1L;
 
 		if (currentHunger < gui.lastHealth && player.invulnerableTime > 0) {

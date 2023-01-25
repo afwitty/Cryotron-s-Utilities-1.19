@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
@@ -55,7 +55,7 @@ public class SyncHandler
 	private static float dammie = 0;
 	
 	@SubscribeEvent
-	public void onLivingUpdateEvent(LivingTickEvent event)
+	public void onLivingUpdateEvent(LivingUpdateEvent event)
 	{
 		if (!(event.getEntity() instanceof ServerPlayer))
 			return;
@@ -83,11 +83,11 @@ public class SyncHandler
 	@SubscribeEvent
 	public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
 	{
-		if (!(event.getEntity() instanceof ServerPlayer))
+		if (!(event.getPlayer() instanceof ServerPlayer))
 			return;
 
-		lastSaturationLevels.remove(event.getEntity().getUUID());
-		lastExhaustionLevels.remove(event.getEntity().getUUID());
+		lastSaturationLevels.remove(event.getPlayer().getUUID());
+		lastExhaustionLevels.remove(event.getPlayer().getUUID());
 	}
 	
 	@SubscribeEvent
@@ -112,11 +112,11 @@ public class SyncHandler
 			isPlayer = true;	 
 			dammie = event.getAmount();
 
-			Vec3 entityLocation = event.getEntity().position().add(0, event.getEntity().getBbHeight()/2, 0);
+			Vec3 entityLocation = event.getEntityLiving().position().add(0, event.getEntityLiving().getBbHeight()/2, 0);
 			double x = entityLocation.x();
 			double y = entityLocation.y();
 			double z = entityLocation.z();
-			double offset = event.getEntity().getBbWidth();
+			double offset = event.getEntityLiving().getBbWidth();
 			
 			Object msg = new MessageDamageDoneSync(x,y,z,offset, isDamaged, isPlayer, dammie, isCrit);
 			CHANNEL.sendTo(msg, sp.connection.connection, NetworkDirection.PLAY_TO_CLIENT);		
