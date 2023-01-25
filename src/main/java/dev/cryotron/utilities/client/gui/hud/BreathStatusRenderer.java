@@ -16,8 +16,9 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 
@@ -31,11 +32,11 @@ public class BreathStatusRenderer {
 	private static float lastTickHealth = 0;
 
 	public static void init() {
-		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, RenderGameOverlayEvent.PreLayer.class, BreathStatusRenderer::onBreathRender);
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, RenderGuiOverlayEvent.Pre.class, BreathStatusRenderer::onBreathRender);
 	}
 
-	private static void onBreathRender(RenderGameOverlayEvent.PreLayer ev) {
-		if (ev.isCanceled() || ev.getOverlay() != ForgeIngameGui.AIR_LEVEL_ELEMENT)
+	private static void onBreathRender(RenderGuiOverlayEvent.Pre ev) {
+		if (ev.isCanceled() || !ev.getOverlay().id().equals(VanillaGuiOverlay.AIR_LEVEL.id()))
 			return;
 
 		BreathRenderType renderType = CTUtilitiesConfig.CLIENT.breathRenderType.get();
@@ -45,7 +46,7 @@ public class BreathStatusRenderer {
 
 		Minecraft mc = Minecraft.getInstance();
 
-		if (!(mc.gui instanceof ForgeIngameGui gui) || mc.options.hideGui || !gui.shouldDrawSurvivalElements())
+		if (!(mc.gui instanceof ForgeGui gui) || mc.options.hideGui || !gui.shouldDrawSurvivalElements())
 			return;
 
 		LocalPlayer player = mc.player;
@@ -53,8 +54,8 @@ public class BreathStatusRenderer {
 		
 		
 		int left = (mc.getWindow().getGuiScaledWidth() / 2) + 10; //-91
-		int top = mc.getWindow().getGuiScaledHeight() - gui.right_height;
-		gui.right_height += 11;
+		int top = mc.getWindow().getGuiScaledHeight() - gui.rightHeight;
+		gui.rightHeight += 11;
 
 		gui.setupOverlayRenderState(true, false);
 		ev.setCanceled(true);
@@ -83,10 +84,10 @@ public class BreathStatusRenderer {
 
 		RenderSystem.disableBlend();
 		mc.getProfiler().pop();
-		MinecraftForge.EVENT_BUS.post(new RenderGameOverlayEvent.Post(matrix, ev, RenderGameOverlayEvent.ElementType.LAYER));
+		//MinecraftForge.EVENT_BUS.post(new RenderGuiOverlayEvent.Post(matrix, ev, RenderGuiOverlayEvent.ElementType.LAYER));
 	}
 
-	private static void renderBar(PoseStack matrix, Minecraft mc, ForgeIngameGui gui, int left, int top, float currentBreath, float maxBreath, boolean waterBreathing, boolean conduit) {
+	private static void renderBar(PoseStack matrix, Minecraft mc, ForgeGui gui, int left, int top, float currentBreath, float maxBreath, boolean waterBreathing, boolean conduit) {
 		int uvY = 0;
 		if (waterBreathing) {
 			uvY = 36; 
@@ -135,7 +136,7 @@ public class BreathStatusRenderer {
 		matrix.popPose();
 	}
 
-	private static void renderNumeric(PoseStack matrix, Minecraft mc, ForgeIngameGui gui, int left, int top, float currentBreath, float maxBreath, boolean waterBreathing, boolean conduit) {
+	private static void renderNumeric(PoseStack matrix, Minecraft mc, ForgeGui gui, int left, int top, float currentBreath, float maxBreath, boolean waterBreathing, boolean conduit) {
 		int healthColour;
 
 		healthColour = ColourUtil.RGB(0, 168, 243);
@@ -157,7 +158,7 @@ public class BreathStatusRenderer {
 			}
 		}
 		else {
-			gui.left_height += 2;
+			gui.leftHeight += 2;
 
 
 			matrix.translate(left + 17, top + 1.2, 0);
@@ -193,7 +194,7 @@ public class BreathStatusRenderer {
 	}
 	
 	// Possibly deprecated. -CT
-	private static boolean handleBreathState(LocalPlayer player, ForgeIngameGui gui, float currentBreath) {
+	private static boolean handleBreathState(LocalPlayer player, ForgeGui gui, float currentBreath) {
 		boolean shouldFlash = gui.healthBlinkTime > (long)gui.tickCount && (gui.healthBlinkTime - (long)gui.tickCount) / 3L % 2L == 1L;
 
 		if (currentBreath < gui.lastHealth && player.invulnerableTime > 0) {
