@@ -6,7 +6,7 @@ issueTrackerURL="https://github.com/afwitty/Cryotron-s-Utilities-1.19/issues"
 
 [[mods]] 
 modId="cryoutilities"
-version="1.0.5"
+version="1.0.7"
 displayName="Cryotron's Utilities" 
 logoFile="examplemod.png" #optional
 credits="Tslat and repo collaborators for AoA Bars and Utils; ToroCraft and repo collaborators for Damage Indicator Prototype; sqeek502 for Appleskin's Hunger Networking; Unseenpath for Multiplayer Testing "
