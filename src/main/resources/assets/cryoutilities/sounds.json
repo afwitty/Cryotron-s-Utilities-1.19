@@ -1,0 +1,9 @@
+{
+	"player.death": {
+		"sounds": [
+			{
+				"name": "cryoutilities:player/death"
+			}
+		]
+	}
+}
