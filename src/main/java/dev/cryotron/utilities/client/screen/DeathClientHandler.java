@@ -18,6 +18,10 @@ import dev.cryotron.utilities.setup.RegisteredSounds;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CTUtilities.ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class DeathClientHandler {
 	
+	
+	/*
+	 * 
+	 */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onScreenOpen(Opening event) {
         Screen screen = event.getScreen();
