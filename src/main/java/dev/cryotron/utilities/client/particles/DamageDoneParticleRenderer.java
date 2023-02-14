@@ -2,7 +2,7 @@ package dev.cryotron.utilities.client.particles;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis; // FORMERLY: com.mojang.math.Vector3f;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -57,8 +57,8 @@ public class DamageDoneParticleRenderer {
 
 		    matrix.pushPose();
 		    matrix.translate(x - camX, y - camY, z - camZ);
-		    matrix.mulPose(Axis.YP.rotationDegrees(-camera.getYRot()));
-		    matrix.mulPose(Axis.XP.rotationDegrees(camera.getXRot()));
+		    matrix.mulPose(Vector3f.YP.rotationDegrees(-camera.getYRot()));
+		    matrix.mulPose(Vector3f.XP.rotationDegrees(camera.getXRot()));
 		    
 		    double deltaX = x - camX;
 		    double deltaY = y - camY;
@@ -154,8 +154,8 @@ public class DamageDoneParticleRenderer {
 
 		      matrix.pushPose();
 		      matrix.translate(x - camX, (y + height) - camY, z - camZ);
-		      matrix.mulPose(Axis.YP.rotationDegrees(-camera.getYRot()));
-		      matrix.mulPose(Axis.XP.rotationDegrees(camera.getXRot()));
+		      matrix.mulPose(Vector3f.YP.rotationDegrees(-camera.getYRot()));
+		      matrix.mulPose(Vector3f.XP.rotationDegrees(camera.getXRot()));
 		      matrix.scale(-scaleToGui, -scaleToGui, scaleToGui);
 
 		      //render(matrix, entity, 0, 0, FULL_SIZE, true);
