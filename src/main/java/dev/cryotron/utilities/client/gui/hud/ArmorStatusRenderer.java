@@ -14,8 +14,9 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 
@@ -26,10 +27,10 @@ public class ArmorStatusRenderer {
 	private static float lastTickArmor = 0;
 	
 	public static void init() {
-		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, RenderGameOverlayEvent.PreLayer.class, ArmorStatusRenderer::onArmorRender);	
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, RenderGuiOverlayEvent.Pre.class, ArmorStatusRenderer::onArmorRender);	
 	}
 	
-	private static void onArmorRender( RenderGameOverlayEvent.PreLayer ev ) {
+	private static void onArmorRender( RenderGuiOverlayEvent.Pre ev ) {
 		
 		Minecraft mc = Minecraft.getInstance();
 		
@@ -43,7 +44,7 @@ public class ArmorStatusRenderer {
 
 		if ( currentArmor == 0) return;
 		
-		if (ev.isCanceled() || ev.getOverlay() != ForgeIngameGui.ARMOR_LEVEL_ELEMENT) {
+		if (ev.isCanceled() || !ev.getOverlay().id().equals(VanillaGuiOverlay.ARMOR_LEVEL.id())) {
 			return;
 		}
 		
@@ -53,12 +54,12 @@ public class ArmorStatusRenderer {
 			return;
 		}		
 
-		if (!(mc.gui instanceof ForgeIngameGui gui) || mc.options.hideGui || !gui.shouldDrawSurvivalElements())
+		if (!(mc.gui instanceof ForgeGui gui) || mc.options.hideGui || !gui.shouldDrawSurvivalElements())
 			return;
 
 		int left = (mc.getWindow().getGuiScaledWidth() / 2) - 91;
-		int top = mc.getWindow().getGuiScaledHeight() - gui.left_height;
-		gui.left_height += 10;
+		int top = mc.getWindow().getGuiScaledHeight() - gui.leftHeight;
+		gui.leftHeight += 10;
 		
 		gui.setupOverlayRenderState(true, false);
 		ev.setCanceled(true);
@@ -78,11 +79,11 @@ public class ArmorStatusRenderer {
 		
 		RenderSystem.disableBlend();
 		mc.getProfiler().pop();
-		MinecraftForge.EVENT_BUS.post(new RenderGameOverlayEvent.Post(matrix, ev, RenderGameOverlayEvent.ElementType.LAYER));
+		//MinecraftForge.EVENT_BUS.post(new RenderGuiOverlayEvent.Post(matrix, ev, RenderGuiOverlayEvent.ElementType.LAYER));
 		
 	}
 	
-	private static void renderBar(PoseStack matrix, Minecraft mc, ForgeIngameGui gui, int left, int top, float currentArmor, float maxHealth) {
+	private static void renderBar(PoseStack matrix, Minecraft mc, ForgeGui gui, int left, int top, float currentArmor, float maxHealth) {
 		int uvY = 0;
 
 		if (!NumberUtil.roundToNthDecimalPlace(lastTickArmor, 1).equals(NumberUtil.roundToNthDecimalPlace(currentArmor, 1))) {
@@ -135,7 +136,7 @@ public class ArmorStatusRenderer {
 		matrix.popPose();
 	}
 
-	private static void renderNumeric(PoseStack matrix, Minecraft mc, ForgeIngameGui gui, int left, int top, float currentArmor, float maxHealth, float toughness) {
+	private static void renderNumeric(PoseStack matrix, Minecraft mc, ForgeGui gui, int left, int top, float currentArmor, float maxHealth, float toughness) {
 		int healthColour;
 
 		if (true) {
@@ -165,7 +166,7 @@ public class ArmorStatusRenderer {
 			}
 		}
 		else {
-			gui.left_height += 2;
+			gui.leftHeight += 2;
 			
 			if (toughness > 0)
 				left -= 8;
@@ -202,7 +203,7 @@ public class ArmorStatusRenderer {
 	}
 	
 	// Possibly deprecated. -CT
-	private static boolean handleArmorState(LocalPlayer player, ForgeIngameGui gui, float currentArmor) {
+	private static boolean handleArmorState(LocalPlayer player, ForgeGui gui, float currentArmor) {
 		boolean shouldFlash = gui.healthBlinkTime > (long)gui.tickCount && (gui.healthBlinkTime - (long)gui.tickCount) / 3L % 2L == 1L;
 
 		if (currentArmor < gui.lastHealth && player.invulnerableTime > 0) {
