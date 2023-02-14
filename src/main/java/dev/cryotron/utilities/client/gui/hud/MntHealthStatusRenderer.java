@@ -65,9 +65,9 @@ public class MntHealthStatusRenderer {
 		gui.setupOverlayRenderState(true, false);
 		ev.setCanceled(true);
 
-		mc.getProfiler().push("breath");
+		mc.getProfiler().push("mount");
 		RenderSystem.enableBlend();
-
+		
 		float currentHealth = le.getHealth();
 		float maxHealth = le.getMaxHealth();
 		float mntArmor = le.getArmorValue();
@@ -76,14 +76,30 @@ public class MntHealthStatusRenderer {
 		boolean frozen = le.isFullyFrozen();
 		float absorption = mc.player.getAbsorptionAmount();
 		
-		if (renderType == MntHealthRenderType.NUMERIC) {
+		/*
+		 * So a conundrum...
+		 * 
+		 * When I summon a Horse from a command or a spawn egg, its existing health is larger than its max health for some reason. Breaking the bars completely! I don't really know what's causing this and the AbstractHorse class is a really handful class file. I couldn't figure out what's causing this.
+		 * 
+		 * If I can't come up with a better solution to this and becomes bothersome, maybe I'll probably need to set an event that sets its current health to maximum health so maybe the maxHealth >= currentHealth boolean will be deprecated.
+		 * 
+		 * But this only happens if a creative player spawns a horse in Creative Mode... Should be no big deal... Right?
+		 * 
+		 * ... RIGHT!?
+		 * 
+		 * -CT
+		 */
+		
+		if (renderType == MntHealthRenderType.NUMERIC && maxHealth >= currentHealth) {
 			renderNumeric(matrix, mc, le, gui, left, top, currentHealth, maxHealth, poisoned, withered, frozen, absorption, mntArmor);
 		}
 		else {
+			if ( maxHealth >= currentHealth ) {
 			renderBar(matrix, mc, le, gui, left, top, currentHealth, maxHealth, poisoned, withered, frozen, absorption);
 
-			if (renderType ==  MntHealthRenderType.BAR_NUMERIC)
+			if (renderType ==  MntHealthRenderType.BAR_NUMERIC )
 				renderNumeric(matrix, mc, le, gui, left, top, currentHealth, maxHealth, poisoned, withered, frozen, absorption, mntArmor);
+			}
 		}
 
 		RenderSystem.disableBlend();

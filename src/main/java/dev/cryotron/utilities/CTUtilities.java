@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import dev.cryotron.utilities.common.CTUtilitiesConfig;
+import dev.cryotron.utilities.setup.CTURegistration;
 import dev.cryotron.utilities.setup.CTUSetup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +20,9 @@ public class CTUtilities {
 	
 	public CTUtilities() {
     	LOGGER.info("Cryotron's Utilities Online!");
+    	
+    	// Registration
+    	CTURegistration.init();
     	
     	// Config
 		CTUtilitiesConfig.init();	 	
