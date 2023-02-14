@@ -1,0 +1,141 @@
+package dev.cryotron.utilities.client.screen;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import dev.cryotron.utilities.CTUtilities;
+import net.minecraft.Util;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+
+public class DeathSplashScreen extends DeathScreenWrapper {
+    private static final ResourceLocation TIMES_FONT = new ResourceLocation(CTUtilities.ID, "times");
+    private static final Style ROOT_STYLE = Style.EMPTY.withFont(TIMES_FONT);
+    private final Component deathTitle;
+    private final DeathScreenWrapper deathScreen;
+
+    private long fadeInStart;
+    private long fadeOutStart;
+    private long fadeInMenuStart;
+    private int backgroundFade = 0xaf000018;
+    private int counter = 0;
+    private boolean showingMenu;
+
+    public DeathSplashScreen(DeathScreenWrapper deathScreen) {
+        super(deathScreen);
+        this.deathScreen = deathScreen;
+        this.deathTitle = Component.translatable("YOU DIED").setStyle(ROOT_STYLE); // This is supposed to point at "cryoutilities.death" in en_us. -CT
+        this.condition = () -> showingMenu;
+    }
+
+    @Override
+    public void render(PoseStack stack, int pMouseX, int pMouseY, float pPartialTick) {
+        long now = Util.getMillis();
+
+        
+        if (fadeInStart == 0L) {
+
+            fadeInStart = now;
+            backgroundFade = 0xaf000008;
+        }
+        if (fadeOutStart == 0L && fadeInStart + 4000 < now) {       	
+            fadeOutStart = now;             
+            
+        	fill(stack, 0, 0, this.width, this.height, backgroundFade);
+        }
+        if (fadeInMenuStart == 0L && fadeInStart + 5300 < now) {
+            fadeInMenuStart = now;
+            showingMenu = true;
+            
+        	fill(stack, 0, 0, this.width, this.height, backgroundFade);
+            
+        }
+
+        float zoomIn = Mth.clamp((now - fadeInStart) / 5500.0F, 0.0F, 1.0F);
+
+        float fadeIn = 0;
+        float fadeInText = 0;
+
+
+        if (fadeOutStart == 0L) {       	
+            float fIn = (now - fadeInStart) / 1000.0F;
+            fadeIn = Mth.clamp(fIn, 0.0F, 1.0F);
+            fadeInText = Mth.clamp(fIn - 0.5F, 0.0F, 1.0F); 
+        }
+
+        if (fadeOutStart > 0 && fadeInMenuStart == 0L) {
+        	
+            float fOut = (now - fadeOutStart) / 1000.0F;
+            fadeIn = Mth.clamp(1.0F - fOut, 0.0F, 1.0F);
+            fadeInText = Mth.clamp(1.3F - fOut, 0.0F, 1.0F);
+            
+        	fill(stack, 0, 0, this.width, this.height, backgroundFade);     
+        }
+        
+        if (showingMenu) {  	     	
+            float fOut = (now - fadeInMenuStart) / 1000.0F;
+            fadeIn = Mth.clamp(fOut, 0.0F, 1.0F);
+            
+
+        	fill(stack, 0, 0, this.width, this.height, backgroundFade);
+        }
+            
+
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, fadeIn);          
+        
+        for (GuiEventListener guieventlistener : deathScreen.children()) {
+            if (guieventlistener instanceof AbstractWidget) {
+                ((AbstractWidget) guieventlistener).setAlpha(fadeIn);
+            }
+        }
+        
+        deathScreen.setAlpha(fadeIn);         
+        if (!showingMenu) {
+            float centerY = this.height / 2f;                   
+
+        	fill(stack, 0, 0, this.width, this.height, backgroundFade);      
+        	
+        	if (backgroundFade < 0xff000000 && counter == 4) {
+            	backgroundFade += 0x01000000; 
+            	counter = 0;
+        	} else {
+        		counter++;
+        	}
+            
+            this.fillGradient(stack, 0, (int) centerY - 45, this.width, (int) centerY - 25, 0x00000000, 0xea000000);
+            fill(stack, 0, (int) centerY - 25, this.width, (int) centerY + 25, 0xea000000);
+            this.fillGradient(stack, 0, (int) centerY + 25, this.width, (int) centerY + 45, 0xea000000, 0x00000000);
+
+            float w = font.getSplitter().stringWidth(deathTitle.getVisualOrderText()) - 1;
+            float x = (this.width / 2f) - (w / 2f);
+            float y = (this.height / 2f) + 2;
+
+            float scaleZoom = Mth.lerp(zoomIn, 0F, 0.4F);
+            float scale = 2.6F + scaleZoom;
+
+            stack.pushPose();
+            stack.translate(x + (w / 2f), y, 0);
+            stack.scale(scale, scale, scale);           
+            
+            int l = Mth.ceil(fadeInText * 255.0F) << 24;
+            if ((l & 0xfc000000) != 0) {
+                font.draw(stack, deathTitle, -(w/2f), -font.lineHeight, 0x008a0001 | l);
+            }
+            stack.popPose();
+        } else {
+            int l = Mth.ceil(fadeIn * 255.0F) << 24;
+            if ((l & 0xfc000000) != 0) {
+                deathScreen.render(stack, pMouseX, pMouseY, pPartialTick);
+            }
+        }
+
+
+    }
+}

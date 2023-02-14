@@ -6,10 +6,11 @@ issueTrackerURL="https://github.com/afwitty/Cryotron-s-Utilities-1.19/issues"
 
 [[mods]] 
 modId="cryoutilities"
-version="1.0.7"
+version="1.1.0"
 displayName="Cryotron's Utilities" 
 logoFile="examplemod.png" #optional
-credits="Tslat and repo collaborators for AoA Bars and Utils; ToroCraft and repo collaborators for Damage Indicator Prototype; sqeek502 for Appleskin's Hunger Networking; Unseenpath for Multiplayer Testing "
+credits="Tslat and repo collaborators for AoA Bars and Utils; ToroCraft and repo collaborators for Damage Indicator Prototype; sqeek502 for Appleskin's Hunger Networking; Unseenpath for Multiplayer Testing; 
+Corgi_Taco for skipping Experimental Settings; GoryMoon for Dark Souls Death Screen Memes. "
 authors="Cryotron" 
 
 # The description text for the mod (multi line!) (#mandatory)
