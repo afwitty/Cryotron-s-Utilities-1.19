@@ -33,7 +33,7 @@ public class DeathScreenWrapper extends DeathScreen {
 	}
 
 	@Override
-	protected void init() {
+	public void init() {
 //        //noinspection ConstantConditions
         deathScreen.init(minecraft, width, height);
     }
@@ -71,11 +71,6 @@ public class DeathScreenWrapper extends DeathScreen {
         	button.render(stack, pMouseX, pMouseY, pPartialTick);
         }
     }
-    
-    @Override
-    public void handleExitToTitleScreen() {
-           this.exitToTitleScreen();
-     }
     
     @Override
     public void exitToTitleScreen() {

@@ -1,6 +1,7 @@
 package dev.cryotron.utilities.setup;
 
 import dev.cryotron.utilities.CTUtilities;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -17,6 +18,6 @@ public class RegisteredSounds {
 	
 	// Using AOA3 Sound methods for sound effects.
 	private static SoundEvent createSoundEvent(String soundPath) {
-		return SoundEvent.createVariableRangeEvent(CTUtilities.id(soundPath));
+		return new SoundEvent(new ResourceLocation("cryoutilities", soundPath));
 	}
 }
